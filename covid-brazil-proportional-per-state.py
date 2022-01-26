@@ -53,4 +53,3 @@ fig_total_per_100k.layout.updatemenus[0].buttons[0].args[1]['frame']['duration']
 fig_total_per_100k.layout.updatemenus[0].buttons[0].args[1]['transition']['duration'] = 20
 fig_total_per_100k.update_geos(resolution=110)
 fig_total_per_100k.show()
-fig_total_per_100k.write_html("covid_map_cases_per_100k_brazil_evolution.html")

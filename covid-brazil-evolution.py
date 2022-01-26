@@ -15,7 +15,8 @@ tabela_vacinados.reindex(tabela.columns, axis=1)
 tabela_resumo['mes'] = tabela_resumo['mes'].dt.strftime('%m-%Y')
 tabela_vacinados['mes'] = tabela_vacinados['mes'].dt.strftime('%m-%Y')
 tabela_resumo = tabela_resumo[['mes','newCases', 'newDeaths']]
-tabela_vacinados = tabela_vacinados[['mes','vaccinated']]
+tabela_vacinados = tabela_vacinados[['mes','vaccinated', 'vaccinated_single', 'vaccinated_second',
+                                     'vaccinated_third']]
 tabela_tratada = tabela_resumo.merge(tabela_vacinados, on='mes')
 print(tabela_tratada.info())
 print(tabela_tratada)
@@ -31,7 +32,10 @@ def plottar_grafico():
             y=tabela_tratada['newCases'],
             showlegend=False,
             text=tabela_tratada['newCases'],
-            mode='lines+markers',
+            textposition='top center',
+            textfont_size=12,
+            texttemplate='%{text:.3s}',
+            mode='lines+markers+text',
             name='Cases',
             line_shape='spline',
             line=dict(width=1.5)
@@ -45,8 +49,11 @@ def plottar_grafico():
             y=tabela_tratada['newDeaths'],
             showlegend=False,
             text=tabela_tratada['newDeaths'],
+            textposition='top center',
+            textfont_size=12,
+            texttemplate='%{text:.3s}',
             name='Deaths',
-            mode='lines+markers',
+            mode='lines+markers+text',
             line_shape='spline',
             line=dict(width=1.5),
             ),
@@ -57,9 +64,12 @@ def plottar_grafico():
     fig.add_trace(
         go.Scatter(x=tabela_tratada['mes'],
             y=tabela_tratada['vaccinated'],
-            showlegend=False,
+            showlegend=True,
             text=tabela_tratada['vaccinated'],
-            mode='lines+markers',
+            textposition='top center',
+            textfont_size=12,
+            texttemplate='%{text:.3s}',
+            mode='lines+markers+text',
             name='Vaccinated',
             line_shape='spline',
             line=dict(width=1.5)
@@ -67,6 +77,35 @@ def plottar_grafico():
         row=3,
         col=1
         )
+
+    fig.add_trace(
+        go.Scatter(x=tabela_tratada['mes'],
+            y=tabela_tratada['vaccinated_second'],
+            showlegend=True,
+            text=tabela_tratada['vaccinated_second'],
+            mode='lines+markers',
+            name='Vaccinated Second Dose',
+            line_shape='spline',
+            line=dict(width=1.5)
+            ),
+        row=3,
+        col=1
+        )
+
+    fig.add_trace(
+        go.Scatter(x=tabela_tratada['mes'],
+            y=tabela_tratada['vaccinated_third'],
+            showlegend=True,
+            text=tabela_tratada['vaccinated_third'],
+            mode='lines+markers',
+            name='Vaccinated Third Dose',
+            line_shape='spline',
+            line=dict(width=1.5)
+            ),
+        row=3,
+        col=1
+        )
+
 
     frames = [dict(name=i,
         data=[go.Scatter(
@@ -77,13 +116,23 @@ def plottar_grafico():
             y=tabela_tratada['newDeaths'][:k+1]),
             go.Scatter(
             x=tabela_tratada['mes'][:k+1],
-            y=tabela_tratada['vaccinated'][:k+1])
+            y=tabela_tratada['vaccinated'][:k+1]),
+            go.Scatter(
+            x = tabela_tratada['mes'][:k + 1],
+            y = tabela_tratada['vaccinated_second'][:k + 1]),
+            go.Scatter(
+            x=tabela_tratada['mes'][:k + 1],
+            y=tabela_tratada['vaccinated_third'][:k + 1])
             ],
-        traces= [0, 1, 2])
+        traces= [0, 1, 2, 3, 4],
+        )
         for k, i in enumerate(tabela_tratada['mes'])]
 
     layout = go.Layout(
-        showlegend=False,
+        showlegend=True,
+        legend=dict(
+            y=0.12
+        ),
         title={'text': "Brazil's Covid-19 Evolution",
                'x': 0.5,
                'y': 1,
@@ -100,14 +149,14 @@ def plottar_grafico():
             method='animate',
             args=[None,
                 dict(frame=dict(duration=750,
-                    redraw=False),
+                    redraw=True),
                     transition=dict(duration=0),
                     fromcurrent=True,
                     mode='immediate')]),
             dict(label='Pause',
                 method='animate',
                 args=[[None],
-                    dict(frame=dict(duration=0, redraw=False),
+                    dict(frame=dict(duration=0, redraw=True),
                     transition=dict(duration=0),
                     mode='immediate')])
                 ],
@@ -123,7 +172,7 @@ def plottar_grafico():
                 'transition': {'duration': 0, 'easing': 'linear'},
                 'pad': {'b': 20, 't': 50},
                 'len': 0.9, 'x': 0.1, 'y': 0,
-                'steps': [{'args': [[i], {'frame': {'duration': 0, 'easing': 'linear', 'redraw': False},
+                'steps': [{'args': [[i], {'frame': {'duration': 0, 'easing': 'linear', 'redraw': True},
                                           'transition': {'duration': 0, 'easing': 'linear'}}],
                            'label': i, 'method': 'animate'} for i in tabela_tratada['mes']
                           ]
@@ -132,7 +181,11 @@ def plottar_grafico():
 
     for title in fig['layout']['annotations']:
         title['yshift']= 10
-        title['font']['size']=20
+        title['font']['size']= 20
+
+    fig.update_yaxes(range=[-100000,2500000], showticklabels=False, row=1, col=1)
+    fig.update_yaxes(range=[-5000,100000], showticklabels=False, row=2, col=1)
+    fig.update_yaxes(range=[-10000000,200000000], showticklabels=False, row=3, col=1)
 
     fig.update(frames=frames)
     fig.update(layout=layout)
