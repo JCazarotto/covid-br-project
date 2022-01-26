@@ -15,11 +15,15 @@ tabela_vacinados.reindex(tabela.columns, axis=1)
 tabela_resumo['mes'] = tabela_resumo['mes'].dt.strftime('%m-%Y')
 tabela_vacinados['mes'] = tabela_vacinados['mes'].dt.strftime('%m-%Y')
 tabela_resumo = tabela_resumo[['mes','newCases', 'newDeaths']]
-tabela_vacinados = tabela_vacinados[['mes','vaccinated', 'vaccinated_single', 'vaccinated_second',
-                                     'vaccinated_third']]
+tabela_vacinados['vaccinated_single'] = tabela_vacinados['vaccinated_single'].fillna(0)
+tabela_vacinados['vaccinated_total'] = tabela_vacinados['vaccinated'] + tabela_vacinados['vaccinated_single']
+tabela_vacinados = tabela_vacinados[['mes','vaccinated_total','vaccinated', 'vaccinated_single',
+                                     'vaccinated_second','vaccinated_third']]
 tabela_tratada = tabela_resumo.merge(tabela_vacinados, on='mes')
-print(tabela_tratada.info())
-print(tabela_tratada)
+
+pd.set_option('display.max_columns', None)
+#print(tabela_tratada.info())
+#print(tabela_tratada)
 
 
 def plottar_grafico():
@@ -63,9 +67,9 @@ def plottar_grafico():
 
     fig.add_trace(
         go.Scatter(x=tabela_tratada['mes'],
-            y=tabela_tratada['vaccinated'],
+            y=tabela_tratada['vaccinated_total'],
             showlegend=True,
-            text=tabela_tratada['vaccinated'],
+            text=tabela_tratada['vaccinated_total'],
             textposition='top center',
             textfont_size=12,
             texttemplate='%{text:.3s}',
@@ -106,7 +110,6 @@ def plottar_grafico():
         col=1
         )
 
-
     frames = [dict(name=i,
         data=[go.Scatter(
             x=tabela_tratada['mes'][:k+1],
@@ -116,7 +119,7 @@ def plottar_grafico():
             y=tabela_tratada['newDeaths'][:k+1]),
             go.Scatter(
             x=tabela_tratada['mes'][:k+1],
-            y=tabela_tratada['vaccinated'][:k+1]),
+            y=tabela_tratada['vaccinated_total'][:k+1]),
             go.Scatter(
             x = tabela_tratada['mes'][:k + 1],
             y = tabela_tratada['vaccinated_second'][:k + 1]),
