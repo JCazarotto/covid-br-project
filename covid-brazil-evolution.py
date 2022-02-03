@@ -186,7 +186,7 @@ def plottar_grafico():
         title['yshift']= 10
         title['font']['size']= 20
 
-    fig.update_yaxes(range=[-100000,2500000], showticklabels=False, row=1, col=1)
+    fig.update_yaxes(range=[-100000,3000000], showticklabels=False, row=1, col=1)
     fig.update_yaxes(range=[-5000,100000], showticklabels=False, row=2, col=1)
     fig.update_yaxes(range=[-10000000,200000000], showticklabels=False, row=3, col=1)
 
