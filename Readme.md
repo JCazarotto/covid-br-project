@@ -14,4 +14,4 @@ Fonte dos dados:
 https://www.kaggle.com/wlcota/covid19-cases-in-brazil-at-city-level?select=cases-brazil-states.csv
 
 Versão utilizada no projeto:
-* Dados até 27/01/2022
+* Dados até 03/02/2022
