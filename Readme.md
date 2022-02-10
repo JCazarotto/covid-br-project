@@ -15,3 +15,7 @@ https://www.kaggle.com/wlcota/covid19-cases-in-brazil-at-city-level?select=cases
 
 Versão utilizada no projeto:
 * Dados até 03/02/2022
+
+<div align="center">
+<img src="https://github.com/JCazarotto/covid-br-project/blob/master/dashboard_pbi.png" alt="Dashboard PowerBI"/>
+</div>
